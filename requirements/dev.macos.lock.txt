@@ -1,0 +1,10 @@
+# Hash-pinned development lockfile — macOS (arm64).
+#
+# Same pins as the Linux lock, different wheel digests. See
+# requirements/dev.linux.lock.txt for why the locks are split by platform.
+#
+# Generated from requirements/dev.in. Drift is enforced by
+# .github/workflows/lockfile-check.yml.
+ruff==0.16.6 \
+    --hash=sha256:99b62ea33baf130f50368798d841f0d95527b6d817bf31817b65dd058f1d314c \
+    --hash=sha256:dcf8a73d2ff77e99dde91244b4da16feba7f14e6beeb4015dee7c5a909e99050

@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-06T00:00:00Z",
+  "capabilities": [
+    {
+      "id": "governance.execution_governor",
+      "title": "Fail-closed action authorization",
+      "description": "Evaluates every proposed real-world action against an ordered policy pipeline and returns ALLOW, REQUIRES_APPROVAL, or DENY. Denies by default, denies on error, and cannot itself perform an action.",
+      "risk_tier": "high",
+      "human_in_the_loop": "required",
+      "approval_gate": "operator.scoped_approval_token",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "governance.approval_tokens",
+      "title": "Scoped, expiring human approval",
+      "description": "Issues HMAC-signed approval tokens bound to one action type, one target digest, and one expiry window, so that an approval cannot be forged by the agent runtime or replayed against a different target.",
+      "risk_tier": "high",
+      "human_in_the_loop": "required",
+      "approval_gate": "operator.scoped_approval_token",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "governance.contact_suppression",
+      "title": "Do-not-contact enforcement",
+      "description": "Normalizes contact identifiers and checks them against a keyed-digest suppression list. Stores no raw phone number or email address, so a leaked suppression file cannot be reused as a contact list.",
+      "risk_tier": "high",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "governance.outbound_redaction",
+      "title": "Credential and PII redaction on egress",
+      "description": "Scans outbound content for credential shapes and personal data before it reaches a third party, a log, or a model prompt. Findings report detector names and offsets only, never the matched value.",
+      "risk_tier": "medium",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "governance.test_database_guard",
+      "title": "Structural test/production state isolation",
+      "description": "Refuses to hand a non-test database target to a process that has identified itself as a test runner. Allowlist-shaped, so an unrecognized target fails closed rather than slipping through an outdated pattern.",
+      "risk_tier": "medium",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "assurance.evidence_ledger",
+      "title": "Evidence-state ladder",
+      "description": "Resolves the highest state a subject has earned from an unbroken chain of evidence, and refuses to support a claim beyond it. Runtime evidence expires; source evidence does not.",
+      "risk_tier": "low",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "assurance.release_gate",
+      "title": "Evidence-gated release verdict",
+      "description": "Validates the capability and claim registries against their schemas, checks every active claim against the evidence ledger, and emits a verdict with a machine-readable report. Distinguishes policy verdicts from its own execution failure by exit code.",
+      "risk_tier": "medium",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "assurance.ci_policy",
+      "title": "Change-scoped merge policy",
+      "description": "Combines the release-gate verdict with the set of files a change touched to produce a merge decision, so that advisory findings escalate on governed surface and a safety-critical change without a test change is blocked.",
+      "risk_tier": "low",
+      "human_in_the_loop": "none",
+      "evidence_state": "TESTED",
+      "owner": "platform",
+      "last_reviewed": "2026-09-06"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: Lockfile Check
+
+on:
+  push:
+    branches: [main]
+    paths: ["requirements/**", "scripts/check_lockfiles.py", ".github/workflows/lockfile-check.yml"]
+  pull_request:
+    paths: ["requirements/**", "scripts/check_lockfiles.py", ".github/workflows/lockfile-check.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: lockfile drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compare every lockfile against requirements/dev.in
+        run: python scripts/check_lockfiles.py
+
+  installable:
+    name: hash-verified install (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            lockfile: requirements/dev.linux.lock.txt
+          - os: macos-latest
+            lockfile: requirements/dev.macos.lock.txt
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Proves the digests in the lockfile are the digests the index serves. A
+      # lockfile that has never been installed under --require-hashes is a
+      # lockfile nobody has checked.
+      - name: Install under --require-hashes
+        run: pip install --require-hashes -r ${{ matrix.lockfile }}
+
+      - name: Confirm the pinned version is what got installed
+        run: ruff --version

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StormResourseAI/stormbot/assurance/schemas/product_claim_registry.schema.json",
+  "title": "Product Claim Registry",
+  "description": "Every statement the product makes about itself, bound to the capabilities it depends on and the evidence that supports it. A claim with no evidence is a claim that cannot ship.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "claims"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/claim" }
+    }
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "customer_facing",
+        "capability_refs",
+        "evidence_refs",
+        "required_state",
+        "status",
+        "last_reviewed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^claim\\.[a-z][a-z0-9_]*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 400,
+          "description": "The claim in the words a customer would read, not in implementation terms."
+        },
+        "customer_facing": {
+          "type": "boolean",
+          "description": "True when the statement appears in marketing, sales, or product copy. Customer-facing claims are held to a higher evidence floor."
+        },
+        "capability_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "required_state": {
+          "type": "string",
+          "enum": ["BUILT", "INTEGRATED", "TESTED", "CERTIFIED", "DEPLOYED", "ACTIVE"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "active", "retired"]
+        },
+        "last_reviewed": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+# Hash-pinned development lockfile — Linux (x86_64).
+#
+# Installed with `pip install --require-hashes`, so pip refuses any artifact
+# whose digest is not listed here. A compromised or substituted wheel fails the
+# install rather than silently running in CI.
+#
+# Locks are split by platform because wheel digests are platform-specific; a
+# single cross-platform lockfile either drops the hashes or fails to install.
+#
+# Generated from requirements/dev.in. Drift is enforced by
+# .github/workflows/lockfile-check.yml.
+ruff==0.16.6 \
+    --hash=sha256:d72c591a96986ee4268860e2b7235082129ca5e4cb9cbba653a4b57c11893757 \
+    --hash=sha256:9ac8998457832c2061709d900856b7ad271dace0cb41f346588d540162bfa718 \
+    --hash=sha256:dcf8a73d2ff77e99dde91244b4da16feba7f14e6beeb4015dee7c5a909e99050

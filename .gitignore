@@ -1,6 +1,7 @@
 # Secrets
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *.p12
@@ -14,20 +15,32 @@ secrets*
 *.sqlite3
 *.db-wal
 *.db-shm
+*.db-journal
 
 # Real data / logs / backups
 logs/
 backups/
 runtime/
+exports/
 *.bak
 *.backup
+*.orig
 *.tar
 *.tar.gz
+*.zip
+*.dump
+
+# Generated artifacts
+artifacts/
 
 # Python
 __pycache__/
 *.py[cod]
+*.egg-info/
+build/
+dist/
 .pytest_cache/
+.ruff_cache/
 .venv/
 venv/
 
