@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-06T00:00:00Z",
+  "claims": [
+    {
+      "id": "claim.approval_before_contact",
+      "statement": "No message reaches a real person until a human operator has approved that specific message for that specific recipient.",
+      "customer_facing": true,
+      "capability_refs": ["governance.execution_governor", "governance.approval_tokens"],
+      "evidence_refs": ["ev.execution_governor.tests", "ev.approval_tokens.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.unknown_actions_are_denied",
+      "statement": "The system can only take actions that appear on an explicit policy allowlist. A capability that has not been reviewed cannot be invoked, even accidentally.",
+      "customer_facing": true,
+      "capability_refs": ["governance.execution_governor"],
+      "evidence_refs": ["ev.execution_governor.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.opt_out_is_enforced",
+      "statement": "Once someone opts out, the system will not contact them again, regardless of how their phone number or email address is formatted on a later import.",
+      "customer_facing": true,
+      "capability_refs": ["governance.contact_suppression", "governance.execution_governor"],
+      "evidence_refs": ["ev.contact_suppression.tests", "ev.execution_governor.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.no_raw_contact_storage",
+      "statement": "The do-not-contact list holds keyed digests rather than phone numbers or email addresses, so it cannot be repurposed as a marketing list if it leaks.",
+      "customer_facing": true,
+      "capability_refs": ["governance.contact_suppression"],
+      "evidence_refs": ["ev.contact_suppression.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.no_credentials_in_outbound_content",
+      "statement": "Outbound content is scanned for credential shapes before it leaves the process, and a match blocks the send rather than raising a warning.",
+      "customer_facing": true,
+      "capability_refs": ["governance.outbound_redaction", "governance.execution_governor"],
+      "evidence_refs": ["ev.outbound_redaction.tests", "ev.execution_governor.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.tests_cannot_reach_production",
+      "statement": "A test run cannot bind to production state. The isolation is enforced by a guard in code rather than by convention or environment discipline.",
+      "customer_facing": false,
+      "capability_refs": ["governance.test_database_guard"],
+      "evidence_refs": ["ev.test_database_guard.tests"],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "id": "claim.claims_are_evidence_gated",
+      "statement": "Every statement in this registry is checked against a machine-readable evidence ledger on every push. A claim that outruns its evidence fails the build.",
+      "customer_facing": true,
+      "capability_refs": [
+        "assurance.release_gate",
+        "assurance.evidence_ledger",
+        "assurance.ci_policy"
+      ],
+      "evidence_refs": [
+        "ev.release_gate.tests",
+        "ev.evidence_ledger.tests",
+        "ev.ci_policy.tests"
+      ],
+      "required_state": "TESTED",
+      "status": "active",
+      "last_reviewed": "2026-09-06"
+    }
+  ]
+}

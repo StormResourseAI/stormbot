@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StormResourseAI/stormbot/assurance/schemas/release_gate.schema.json",
+  "title": "Release Gate Report",
+  "description": "The machine-readable output of a release-gate run. Published as a CI artifact so that a verdict can be audited after the fact rather than re-derived from log scrollback.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "policy", "target", "verdict", "summary", "checks"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "policy": { "type": "string", "enum": ["advisory", "deployment", "certification"] },
+    "target": { "type": "string", "minLength": 1 },
+    "compare_to": { "type": ["string", "null"] },
+    "verdict": { "type": "string", "enum": ["pass", "warn", "fail"] },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_checks", "passed", "warned", "failed"],
+      "properties": {
+        "total_checks": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "warned": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status", "severity", "detail", "subjects"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "title": { "type": "string", "minLength": 3 },
+        "status": { "type": "string", "enum": ["pass", "warn", "fail"] },
+        "severity": { "type": "string", "enum": ["blocking", "advisory"] },
+        "detail": { "type": "string" },
+        "subjects": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The specific entries that triggered the finding. Empty on a passing check."
+        }
+      }
+    }
+  }
+}

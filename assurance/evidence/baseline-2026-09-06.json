@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-06T00:00:00Z",
+  "records": [
+    {
+      "id": "ev.execution_governor.source",
+      "kind": "SOURCE_TREE",
+      "subject": "governance.execution_governor",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Ordered fail-closed decision pipeline with eight checks and no path from an exception to an allow.",
+      "artifact_uri": "src/stormbot/governance/governor.py"
+    },
+    {
+      "id": "ev.execution_governor.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "governance.execution_governor",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "End-to-end governed send pipeline exercised against suppression, approvals, and redaction together.",
+      "artifact_uri": "tests/integration/test_governed_send_pipeline.py"
+    },
+    {
+      "id": "ev.execution_governor.tests",
+      "kind": "TEST_RUN",
+      "subject": "governance.execution_governor",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Unit contract tests covering default deny, kill switch, go-live gate, quiet hours, budget, and error-to-deny behaviour.",
+      "artifact_uri": "tests/governance/test_execution_governor.py"
+    },
+    {
+      "id": "ev.approval_tokens.source",
+      "kind": "SOURCE_TREE",
+      "subject": "governance.approval_tokens",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "HMAC-signed tokens scoped to action type, target digest, and expiry, verified in constant time.",
+      "artifact_uri": "src/stormbot/governance/approvals.py"
+    },
+    {
+      "id": "ev.approval_tokens.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "governance.approval_tokens",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Approval tokens exercised through the governor rather than in isolation, including cross-target replay.",
+      "artifact_uri": "tests/integration/test_governed_send_pipeline.py"
+    },
+    {
+      "id": "ev.approval_tokens.tests",
+      "kind": "TEST_RUN",
+      "subject": "governance.approval_tokens",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Negative tests for forged signatures, expired windows, wrong action type, and wrong target digest.",
+      "artifact_uri": "tests/governance/test_approval_tokens.py"
+    },
+    {
+      "id": "ev.contact_suppression.source",
+      "kind": "SOURCE_TREE",
+      "subject": "governance.contact_suppression",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Keyed-digest suppression registry with format-independent identifier normalization.",
+      "artifact_uri": "src/stormbot/governance/suppression.py"
+    },
+    {
+      "id": "ev.contact_suppression.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "governance.contact_suppression",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Suppression enforced through the governor for a target formatted differently from the opt-out record.",
+      "artifact_uri": "tests/integration/test_governed_send_pipeline.py"
+    },
+    {
+      "id": "ev.contact_suppression.tests",
+      "kind": "TEST_RUN",
+      "subject": "governance.contact_suppression",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Tests asserting normalization equivalence and that no raw identifier appears in an export.",
+      "artifact_uri": "tests/governance/test_contact_suppression.py"
+    },
+    {
+      "id": "ev.outbound_redaction.source",
+      "kind": "SOURCE_TREE",
+      "subject": "governance.outbound_redaction",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Detector table for credential and personal-data shapes, with value-free finding records.",
+      "artifact_uri": "src/stormbot/governance/redaction.py"
+    },
+    {
+      "id": "ev.outbound_redaction.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "governance.outbound_redaction",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Payload scanning enforced as a blocking governor check on a live-shaped send request.",
+      "artifact_uri": "tests/integration/test_governed_send_pipeline.py"
+    },
+    {
+      "id": "ev.outbound_redaction.tests",
+      "kind": "TEST_RUN",
+      "subject": "governance.outbound_redaction",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Negative assertions proving key-shaped strings never survive redaction and never appear in findings.",
+      "artifact_uri": "tests/governance/test_outbound_redaction.py"
+    },
+    {
+      "id": "ev.test_database_guard.source",
+      "kind": "SOURCE_TREE",
+      "subject": "governance.test_database_guard",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Allowlist-shaped guard that rejects any database target it cannot positively recognize as test state.",
+      "artifact_uri": "src/stormbot/governance/db_guard.py"
+    },
+    {
+      "id": "ev.test_database_guard.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "governance.test_database_guard",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Guard exercised under the repository's own test-mode environment marker, not a synthetic one.",
+      "artifact_uri": "tests/integration/test_governed_send_pipeline.py"
+    },
+    {
+      "id": "ev.test_database_guard.tests",
+      "kind": "TEST_RUN",
+      "subject": "governance.test_database_guard",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Tests covering production rejection, in-memory acceptance, and passthrough outside test processes.",
+      "artifact_uri": "tests/governance/test_db_guard.py"
+    },
+    {
+      "id": "ev.evidence_ledger.source",
+      "kind": "SOURCE_TREE",
+      "subject": "assurance.evidence_ledger",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "State ladder with per-rung required evidence kinds and kind-specific freshness policy.",
+      "artifact_uri": "src/stormbot/assurance/evidence.py"
+    },
+    {
+      "id": "ev.evidence_ledger.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "assurance.evidence_ledger",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Ledger driven from the on-disk registries rather than fixtures, through the full release pipeline.",
+      "artifact_uri": "tests/integration/test_release_pipeline.py"
+    },
+    {
+      "id": "ev.evidence_ledger.tests",
+      "kind": "TEST_RUN",
+      "subject": "assurance.evidence_ledger",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Tests for ladder contiguity, expiry of runtime evidence, and refusal of unproven claims.",
+      "artifact_uri": "tests/assurance/test_evidence_ledger.py"
+    },
+    {
+      "id": "ev.release_gate.source",
+      "kind": "SOURCE_TREE",
+      "subject": "assurance.release_gate",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Ten checks across three policies, emitting a schema-conformant report and contract exit codes.",
+      "artifact_uri": "src/stormbot/assurance/release_gate.py"
+    },
+    {
+      "id": "ev.release_gate.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "assurance.release_gate",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Gate run over the committed registries and its report validated against the release-gate schema.",
+      "artifact_uri": "tests/integration/test_release_pipeline.py"
+    },
+    {
+      "id": "ev.release_gate.tests",
+      "kind": "TEST_RUN",
+      "subject": "assurance.release_gate",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Tests proving the gate fails on an unsupported claim and separates execution failure from verdict.",
+      "artifact_uri": "tests/assurance/test_release_gate.py"
+    },
+    {
+      "id": "ev.ci_policy.source",
+      "kind": "SOURCE_TREE",
+      "subject": "assurance.ci_policy",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Change classification plus escalation rules turning a gate verdict into a merge decision.",
+      "artifact_uri": "src/stormbot/assurance/ci_policy.py"
+    },
+    {
+      "id": "ev.ci_policy.integration",
+      "kind": "INTEGRATION_RUN",
+      "subject": "assurance.ci_policy",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Policy applied to a real gate report produced earlier in the same pipeline run.",
+      "artifact_uri": "tests/integration/test_release_pipeline.py"
+    },
+    {
+      "id": "ev.ci_policy.tests",
+      "kind": "TEST_RUN",
+      "subject": "assurance.ci_policy",
+      "recorded_at": "2026-09-06T00:00:00Z",
+      "detail": "Tests for advisory escalation on governed paths and blocking of untested governed changes.",
+      "artifact_uri": "tests/assurance/test_ci_policy.py"
+    }
+  ]
+}

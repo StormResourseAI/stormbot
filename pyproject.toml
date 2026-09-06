@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stormbot"
+version = "1.0.0"
+description = "Reference implementation of a governed AI execution runtime and an evidence-gated release pipeline."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Brian Ackley" }]
+keywords = ["ai-safety", "governance", "release-engineering", "policy", "assurance"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+]
+
+# Intentionally empty, and enforced by tests/contract/test_hermeticity.py.
+# Code whose job is to refuse actions should not inherit a supply chain.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/StormResourseAI/stormbot"
+Documentation = "https://github.com/StormResourseAI/stormbot/blob/main/docs/REVIEWER_GUIDE.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle
+  "F",    # pyflakes
+  "I",    # import sorting
+  "B",    # bugbear
+  "UP",   # pyupgrade
+  "SIM",  # simplification
+  "RUF",  # ruff-specific
+]
+ignore = [
+  "E501",  # line length is enforced by the formatter, not the linter
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Detector patterns are long by nature and splitting them hurts readability.
+"src/stormbot/governance/redaction.py" = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"

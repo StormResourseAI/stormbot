@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StormResourseAI/stormbot/assurance/schemas/evidence_record.schema.json",
+  "title": "Evidence Record Set",
+  "description": "Dated proof that a capability reached a state. Records are append-only; a record is never edited to make a claim pass, it is superseded by a newer one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "records"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/record" }
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "subject", "recorded_at", "detail"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^ev\\.[a-z0-9_]+(\\.[a-z0-9_]+)+$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "SOURCE_TREE",
+            "INTEGRATION_RUN",
+            "TEST_RUN",
+            "CERTIFICATION",
+            "DEPLOYMENT",
+            "RUNTIME_PROBE"
+          ]
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 3,
+          "description": "The capability id this record is evidence about."
+        },
+        "recorded_at": { "type": "string", "format": "date-time" },
+        "detail": { "type": "string", "minLength": 10, "maxLength": 400 },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$",
+          "description": "Required for CERTIFICATION, DEPLOYMENT, and RUNTIME_PROBE records. Enforced in code, because a claim about a build that does not name the build is not evidence."
+        },
+        "artifact_uri": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Where a reader can go to check this record for themselves."
+        }
+      }
+    }
+  }
+}

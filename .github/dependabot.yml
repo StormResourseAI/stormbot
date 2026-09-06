@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  # Dependabot opens the version bump; the lockfile-check workflow then fails
+  # until both platform lockfiles are regenerated with real hashes. That is
+  # intentional — an automated bump should not be able to weaken the pinning.
+  - package-ecosystem: pip
+    directory: /requirements
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ["dependencies", "supply-chain"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    labels: ["dependencies", "ci"]
+    commit-message:
+      prefix: "ci"

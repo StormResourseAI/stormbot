@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StormResourseAI/stormbot/assurance/schemas/ai_capability_registry.schema.json",
+  "title": "AI Capability Registry",
+  "description": "Every AI-driven capability the system exposes, its risk tier, and the human-in-the-loop requirement that applies to it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "capabilities"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/capability" }
+    }
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "description",
+        "risk_tier",
+        "human_in_the_loop",
+        "evidence_state",
+        "owner",
+        "last_reviewed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$",
+          "description": "Dotted identifier, stable for the life of the capability."
+        },
+        "title": { "type": "string", "minLength": 4, "maxLength": 100 },
+        "description": { "type": "string", "minLength": 20, "maxLength": 600 },
+        "risk_tier": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "Blast radius if this capability behaves incorrectly."
+        },
+        "human_in_the_loop": {
+          "type": "string",
+          "enum": ["none", "optional", "required"]
+        },
+        "approval_gate": {
+          "type": "string",
+          "minLength": 4,
+          "description": "Required whenever human_in_the_loop is 'required'; enforced by the release gate, not by this schema."
+        },
+        "evidence_state": {
+          "type": "string",
+          "enum": [
+            "UNKNOWN",
+            "PLANNED",
+            "BUILT",
+            "INTEGRATED",
+            "TESTED",
+            "CERTIFIED",
+            "DEPLOYED",
+            "ACTIVE",
+            "BLOCKED",
+            "SUPERSEDED"
+          ],
+          "description": "Declared state. The release gate rejects any declaration the evidence ledger cannot support."
+        },
+        "owner": { "type": "string", "minLength": 2 },
+        "last_reviewed": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

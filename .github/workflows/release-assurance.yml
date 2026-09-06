@@ -1,0 +1,132 @@
+name: Release Assurance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-assurance-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONPATH: src
+  UNITTEST_RUNNING: "1"
+
+jobs:
+  assurance-lanes:
+    name: ${{ matrix.lane.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      # fail-fast off: when several lanes break at once, seeing all of them in
+      # one run is worth more than saving a few runner minutes.
+      fail-fast: false
+      matrix:
+        lane:
+          - name: governance-contract
+            command: python -m unittest discover -s tests/governance -t . -v
+          - name: assurance-contract
+            command: python -m unittest discover -s tests/assurance -t . -v
+          - name: integration
+            command: python -m unittest discover -s tests/integration -t . -v
+          - name: hermeticity
+            command: python -m unittest tests.contract.test_hermeticity -v
+          - name: registry-validation
+            command: python -m unittest tests.assurance.test_registry_contract -v
+          - name: release-gate-tooling
+            command: python -m stormbot.assurance.release_gate --policy advisory --format text
+          - name: lockfile-integrity
+            command: python scripts/check_lockfiles.py
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: ${{ matrix.lane.name }}
+        run: ${{ matrix.lane.command }}
+
+  candidate-release-certification:
+    name: candidate release certification
+    runs-on: ubuntu-latest
+    needs: assurance-lanes
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the gate reports what changed relative to the base,
+          # which a shallow clone cannot resolve.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Resolve the comparison base
+        id: base
+        run: |
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          elif git rev-parse --verify --quiet HEAD^ >/dev/null; then
+            base="$(git rev-parse HEAD^)"
+          else
+            base=""
+          fi
+          echo "sha=${base}" >> "$GITHUB_OUTPUT"
+
+          if [ -n "${base}" ]; then
+            git diff --name-only "${base}" HEAD > changed-files.txt
+          else
+            : > changed-files.txt
+          fi
+          echo "changed files:"; cat changed-files.txt
+
+      - name: Run the release gate
+        id: gate
+        run: |
+          set +e
+          python -m stormbot.assurance.release_gate \
+            --policy deployment \
+            --target "$(git rev-parse HEAD)" \
+            --compare-to "${{ steps.base.outputs.sha }}" \
+            --format text \
+            --output artifacts/candidate-release-gate.json \
+            --markdown-output artifacts/candidate-release-gate.md
+          code=$?
+          set -e
+
+          # 0, 1 and 2 are policy verdicts and belong to the next step. Anything
+          # above 2 means the gate itself failed, which is not a verdict and must
+          # not be reported as one.
+          if [ "$code" -gt 2 ]; then
+            echo "::error::release gate failed to execute (exit ${code})"
+            exit "$code"
+          fi
+          echo "verdict-exit=${code}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the gate report to the job summary
+        if: always()
+        run: cat artifacts/candidate-release-gate.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Apply the change-scoped merge policy
+        run: |
+          python -m stormbot.assurance.ci_policy \
+            artifacts/candidate-release-gate.json \
+            --changed-files-from changed-files.txt
+
+      - name: Upload the release-gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-release-gate
+          path: |
+            artifacts/candidate-release-gate.json
+            artifacts/candidate-release-gate.md
+          # A missing artifact means the gate never produced a report, which is
+          # exactly the case a silent upload would hide.
+          if-no-files-found: error
+          retention-days: 30
