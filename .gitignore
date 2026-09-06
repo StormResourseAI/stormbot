@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+
+# Databases / runtime state
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# Real data / logs / backups
+logs/
+backups/
+runtime/
+*.bak
+*.backup
+*.tar
+*.tar.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# macOS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Local portfolio research — NEVER PUBLISH
+STORMBOT_GITHUB_PORTFOLIO_EVIDENCE*
+portfolio-private/
