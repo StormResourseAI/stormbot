@@ -130,7 +130,7 @@ The workflow handles this explicitly rather than relying on `set -e`:
 
 ```bash
 set +e
-python -m stormbot.assurance.release_gate --policy deployment ... 
+python -m stormbot.assurance.release_gate --policy deployment ...
 code=$?
 set -e
 
