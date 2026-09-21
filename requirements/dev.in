@@ -5,4 +5,4 @@
 # Everything below exists to lint and format the repository, never to run it.
 #
 # Regenerating the locks: see docs/operations/DEPENDENCY_MANAGEMENT.md.
-ruff==0.16.6
+ruff==0.16.8
